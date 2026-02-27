@@ -57,8 +57,11 @@ function buildBlogCard(post, index) {
   const label = CATEGORY_LABELS[post.category] || post.category;
   const initials = getInitials(post.author_name);
   const stagger = (index % 3) + 1;
+  const imageHtml = post.featured_image
+    ? `<div class="blog-card__image"><img src="${post.featured_image}" alt="${post.title}" style="width:100%;height:100%;object-fit:cover" loading="lazy"></div>`
+    : `<div class="blog-card__image" style="background:${gradient};display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem;font-weight:800;font-family:var(--font-heading)">${label}</div>`;
   return `<article class="blog-card animate-on-scroll stagger-${stagger}" data-testid="card-blog-${index + 1}" data-category="${post.category}">
-      <div class="blog-card__image" style="background:${gradient};display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem;font-weight:800;font-family:var(--font-heading)">${label}</div>
+      ${imageHtml}
       <div class="blog-card__content">
         <div class="blog-card__meta"><span class="blog-card__category">${post.category}</span><span>${post.read_time || ""}</span></div>
         <h3 class="blog-card__title"><a href="/blog/${post.slug}">${post.title}</a></h3>
@@ -73,8 +76,11 @@ function buildLatestCard(post, index) {
   const gradient = CATEGORY_GRADIENTS[post.category] || "linear-gradient(135deg,#667eea,#764ba2)";
   const label = CATEGORY_LABELS[post.category] || post.category;
   const initials = getInitials(post.author_name);
+  const imageHtml = post.featured_image
+    ? `<div class="blog-card__image"><img src="${post.featured_image}" alt="${post.title}" style="width:100%;height:100%;object-fit:cover" loading="lazy"></div>`
+    : `<div class="blog-card__image" style="background:${gradient};display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem;font-weight:800;font-family:var(--font-heading)">${label}</div>`;
   return `<article class="blog-card animate-on-scroll stagger-${index + 1}" data-testid="card-latest-blog-${index + 1}" data-category="${post.category}">
-      <div class="blog-card__image" style="background:${gradient};display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem;font-weight:800;font-family:var(--font-heading)">${label}</div>
+      ${imageHtml}
       <div class="blog-card__content">
         <div class="blog-card__meta"><span class="blog-card__category">${post.category}</span><span>${post.read_time || ""}</span></div>
         <h3 class="blog-card__title"><a href="/blog/${post.slug}" data-testid="link-latest-blog-${index + 1}">${post.title}</a></h3>
