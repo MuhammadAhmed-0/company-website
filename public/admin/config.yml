@@ -1,5 +1,7 @@
 backend:
-  name: MuhammadAhmed-0/company-website
+  name: github
+  repo: MuhammadAhmed-0/company-website
+  branch: main
 
 media_folder: "public/uploads"
 public_folder: "/uploads"

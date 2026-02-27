@@ -1,9 +1,54 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+import { marked } from "marked";
 
-const ROOT = path.resolve(import.meta.dirname);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.resolve(__dirname);
 const PUBLIC = path.join(ROOT, "public");
 const DIST = path.join(ROOT, "dist");
+const CONTENT_DIR = path.join(ROOT, "content", "blog");
+
+interface BlogPost {
+  title: string;
+  slug: string;
+  meta_description: string;
+  og_title: string;
+  og_description: string;
+  canonical_url: string;
+  category: string;
+  author_name: string;
+  author_role: string;
+  author_bio: string;
+  date: string;
+  read_time: string;
+  featured_image: string;
+  excerpt: string;
+  body: string;
+  toc: Array<{ label: string; id: string }>;
+  schema_type: string;
+}
+
+const CATEGORY_GRADIENTS: Record<string, string> = {
+  "AEO": "linear-gradient(135deg,#667eea,#764ba2)",
+  "Strategy": "linear-gradient(135deg,#0055ff,#00d4aa)",
+  "AI Automation": "linear-gradient(135deg,#f093fb,#f5576c)",
+  "GEO": "linear-gradient(135deg,#4facfe,#00f2fe)",
+  "Local SEO": "linear-gradient(135deg,#fa709a,#fee140)",
+  "Technical SEO": "linear-gradient(135deg,#a18cd1,#fbc2eb)",
+  "E-commerce SEO": "linear-gradient(135deg,#ffecd2,#fcb69f)",
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  "AEO": "AEO",
+  "Strategy": "SEO",
+  "AI Automation": "AI",
+  "GEO": "GEO",
+  "Local SEO": "LOCAL",
+  "Technical SEO": "TECH",
+  "E-commerce SEO": "ECOM",
+};
 
 function cleanDist() {
   if (fs.existsSync(DIST)) {
@@ -55,11 +100,143 @@ function fixPaths(html: string, depth: number): string {
     ;
 }
 
-function writeHtml(destPath: string, srcPath: string, depth: number) {
-  const html = fs.readFileSync(srcPath, "utf-8");
+function writeHtml(destPath: string, html: string, depth: number) {
   const dir = path.dirname(destPath);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(destPath, fixPaths(html, depth));
+}
+
+function writeHtmlFromFile(destPath: string, srcPath: string, depth: number) {
+  const html = fs.readFileSync(srcPath, "utf-8");
+  writeHtml(destPath, html, depth);
+}
+
+function getAllPosts(): BlogPost[] {
+  if (!fs.existsSync(CONTENT_DIR)) return [];
+  const files = fs.readdirSync(CONTENT_DIR).filter(f => f.endsWith(".json"));
+  const posts: BlogPost[] = [];
+  for (const file of files) {
+    try {
+      const raw = fs.readFileSync(path.join(CONTENT_DIR, file), "utf-8");
+      posts.push(JSON.parse(raw));
+    } catch {}
+  }
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return posts;
+}
+
+function getInitials(name: string): string {
+  return name.split(" ").map(w => w[0]).join("").toUpperCase();
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function buildBlogCard(post: BlogPost, index: number): string {
+  const gradient = CATEGORY_GRADIENTS[post.category] || "linear-gradient(135deg,#667eea,#764ba2)";
+  const label = CATEGORY_LABELS[post.category] || post.category;
+  const initials = getInitials(post.author_name);
+  const stagger = (index % 3) + 1;
+  return `<article class="blog-card animate-on-scroll stagger-${stagger}" data-testid="card-blog-${index + 1}" data-category="${post.category}">
+      <div class="blog-card__image" style="background:${gradient};display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem;font-weight:800;font-family:var(--font-heading)">${label}</div>
+      <div class="blog-card__content">
+        <div class="blog-card__meta"><span class="blog-card__category">${post.category}</span><span>${post.read_time || ""}</span></div>
+        <h3 class="blog-card__title"><a href="/blog/${post.slug}.html">${post.title}</a></h3>
+        <p class="blog-card__excerpt">${post.excerpt}</p>
+        <div class="blog-card__author"><div class="blog-card__author-avatar">${initials}</div><div><div class="blog-card__author-name">${post.author_name}</div><div class="blog-card__author-date">${formatDate(post.date)}</div></div></div>
+        <a href="/blog/${post.slug}.html" class="blog-card__readmore" data-testid="link-readmore-${index + 1}">Read More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </article>`;
+}
+
+function buildLatestCard(post: BlogPost, index: number): string {
+  const gradient = CATEGORY_GRADIENTS[post.category] || "linear-gradient(135deg,#667eea,#764ba2)";
+  const label = CATEGORY_LABELS[post.category] || post.category;
+  const initials = getInitials(post.author_name);
+  return `<article class="blog-card animate-on-scroll stagger-${index + 1}" data-testid="card-latest-blog-${index + 1}" data-category="${post.category}">
+      <div class="blog-card__image" style="background:${gradient};display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem;font-weight:800;font-family:var(--font-heading)">${label}</div>
+      <div class="blog-card__content">
+        <div class="blog-card__meta"><span class="blog-card__category">${post.category}</span><span>${post.read_time || ""}</span></div>
+        <h3 class="blog-card__title"><a href="/blog/${post.slug}.html" data-testid="link-latest-blog-${index + 1}">${post.title}</a></h3>
+        <p class="blog-card__excerpt">${post.excerpt}</p>
+        <div class="blog-card__author"><div class="blog-card__author-avatar">${initials}</div><div><div class="blog-card__author-name">${post.author_name}</div><div class="blog-card__author-date">${formatDate(post.date)}</div></div></div>
+      </div>
+    </article>`;
+}
+
+function renderBlogPost(template: string, post: BlogPost): string {
+  const initials = getInitials(post.author_name);
+  const dateFormatted = formatDate(post.date);
+  const bodyHtml = marked.parse(post.body) as string;
+
+  let tocHtml = "";
+  if (post.toc && post.toc.length > 0) {
+    tocHtml = `<div class="blog-post__toc">
+      <h4>Table of Contents</h4>
+      <ul>
+        ${post.toc.map(item => `<li><a href="#${item.id}">${item.label}</a></li>`).join("\n        ")}
+      </ul>
+    </div>`;
+  }
+
+  const schemaJson = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": post.schema_type || "Article",
+    "headline": post.title,
+    "author": {
+      "@type": "Person",
+      "name": post.author_name,
+      "jobTitle": post.author_role || "",
+      "url": "/about"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "RankFlow",
+      "url": "/"
+    },
+    "datePublished": post.date.split("T")[0],
+    "dateModified": post.date.split("T")[0],
+    "description": post.meta_description
+  });
+
+  const breadcrumbTitle = post.title.length > 40 ? post.title.substring(0, 40) + "..." : post.title;
+
+  return template
+    .replace(/\{\{TITLE\}\}/g, post.title)
+    .replace(/\{\{META_DESCRIPTION\}\}/g, post.meta_description)
+    .replace(/\{\{OG_TITLE\}\}/g, post.og_title || post.title)
+    .replace(/\{\{OG_DESCRIPTION\}\}/g, post.og_description || post.meta_description)
+    .replace(/\{\{CANONICAL_URL\}\}/g, post.canonical_url || `/blog/${post.slug}`)
+    .replace(/\{\{AUTHOR_NAME\}\}/g, post.author_name)
+    .replace(/\{\{AUTHOR_ROLE\}\}/g, post.author_role || "")
+    .replace(/\{\{AUTHOR_BIO\}\}/g, post.author_bio || "")
+    .replace(/\{\{AUTHOR_INITIALS\}\}/g, initials)
+    .replace(/\{\{CATEGORY\}\}/g, post.category)
+    .replace(/\{\{DATE_FORMATTED\}\}/g, dateFormatted)
+    .replace(/\{\{READ_TIME\}\}/g, post.read_time || "")
+    .replace(/\{\{EXCERPT\}\}/g, post.excerpt)
+    .replace(/\{\{BREADCRUMB_TITLE\}\}/g, breadcrumbTitle)
+    .replace("{{TOC_HTML}}", tocHtml)
+    .replace("{{BODY_HTML}}", bodyHtml)
+    .replace("{{SCHEMA_JSON}}", schemaJson);
+}
+
+function scanHtmlFiles(dir: string, base: string = ""): string[] {
+  const results: string[] = [];
+  if (!fs.existsSync(dir)) return results;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const rel = base ? `${base}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      if (entry.name === "admin" || entry.name === "blog") continue;
+      results.push(...scanHtmlFiles(path.join(dir, entry.name), rel));
+    } else if (entry.name.endsWith(".html") && entry.name !== "blog-post.html" && entry.name !== "blog.html") {
+      results.push(rel);
+    }
+  }
+  return results;
 }
 
 function main() {
@@ -81,16 +258,38 @@ function main() {
   copyDir(path.join(PUBLIC, "admin"), path.join(DIST, "admin"));
   copyDir(path.join(PUBLIC, "uploads"), path.join(DIST, "uploads"));
 
-  console.log("3. Copying HTML pages...");
+  const posts = getAllPosts();
+  console.log(`\n3. Found ${posts.length} blog posts in content/blog/`);
 
-  writeHtml(path.join(DIST, "index.html"), path.join(PUBLIC, "index.html"), 0);
+  console.log("4. Generating blog post pages...");
+  const blogTemplate = fs.readFileSync(path.join(PUBLIC, "blog-post.html"), "utf-8");
+  for (const post of posts) {
+    const rendered = renderBlogPost(blogTemplate, post);
+    writeHtml(path.join(DIST, "blog", `${post.slug}.html`), rendered, 1);
+    console.log(`  blog/${post.slug}.html`);
+  }
+
+  console.log("5. Generating blog listing page...");
+  let blogListingHtml = fs.readFileSync(path.join(PUBLIC, "blog.html"), "utf-8");
+  const blogCardsHtml = posts.map((p, i) => buildBlogCard(p, i)).join("\n    ");
+  blogListingHtml = blogListingHtml.replace("{{BLOG_CARDS}}", blogCardsHtml);
+  writeHtml(path.join(DIST, "blog", "index.html"), blogListingHtml, 1);
+  console.log("  blog/index.html");
+
+  console.log("6. Generating homepage with latest posts...");
+  let indexHtml = fs.readFileSync(path.join(PUBLIC, "index.html"), "utf-8");
+  const latestPosts = posts.slice(0, 3);
+  const latestCardsHtml = latestPosts.map((p, i) => buildLatestCard(p, i)).join("\n    ");
+  indexHtml = indexHtml.replace("{{LATEST_POSTS}}", latestCardsHtml);
+  writeHtml(path.join(DIST, "index.html"), indexHtml, 0);
   console.log("  index.html");
 
+  console.log("7. Copying other HTML pages...");
   const standalonePages = ["about.html", "contact.html", "case-studies.html"];
   for (const file of standalonePages) {
     const srcPath = path.join(PUBLIC, file);
     if (!fs.existsSync(srcPath)) continue;
-    writeHtml(path.join(DIST, file), srcPath, 0);
+    writeHtmlFromFile(path.join(DIST, file), srcPath, 0);
     console.log(`  ${file}`);
   }
 
@@ -100,25 +299,16 @@ function main() {
     if (!fs.existsSync(srcDir)) continue;
     const files = fs.readdirSync(srcDir).filter(f => f.endsWith(".html"));
     for (const file of files) {
-      writeHtml(path.join(DIST, dir, file), path.join(srcDir, file), 1);
+      writeHtmlFromFile(path.join(DIST, dir, file), path.join(srcDir, file), 1);
       console.log(`  ${dir}/${file}`);
     }
   }
 
-  console.log("4. Copying blog pages...");
-  const blogDir = path.join(PUBLIC, "blog");
-  if (fs.existsSync(blogDir)) {
-    const blogFiles = fs.readdirSync(blogDir).filter(f => f.endsWith(".html"));
-    for (const file of blogFiles) {
-      writeHtml(path.join(DIST, "blog", file), path.join(blogDir, file), 1);
-      console.log(`  blog/${file}`);
-    }
-  }
-
-  console.log("5. Generating sitemap.xml...");
+  console.log("8. Generating sitemap.xml from content...");
+  const today = new Date().toISOString().split("T")[0];
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-  xml += `  <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>\n`;
+  xml += `  <url>\n    <loc>${baseUrl}/</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
 
   const sitemapPages = [
     { p: "/about", pr: "0.6" }, { p: "/contact", pr: "0.6" }, { p: "/case-studies", pr: "0.6" }, { p: "/blog", pr: "0.8" },
@@ -128,26 +318,23 @@ function main() {
   ["tools", "free-resources"].forEach(r => sitemapPages.push({ p: `/resources/${r}`, pr: "0.6" }));
 
   for (const pg of sitemapPages) {
-    xml += `  <url><loc>${baseUrl}${pg.p}</loc><changefreq>monthly</changefreq><priority>${pg.pr}</priority></url>\n`;
+    xml += `  <url>\n    <loc>${baseUrl}${pg.p}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>${pg.pr}</priority>\n  </url>\n`;
   }
 
-  if (fs.existsSync(blogDir)) {
-    const blogPosts = fs.readdirSync(blogDir).filter(f => f.endsWith(".html") && f !== "index.html");
-    for (const file of blogPosts) {
-      const slug = file.replace(".html", "");
-      xml += `  <url><loc>${baseUrl}/blog/${slug}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
-    }
+  for (const post of posts) {
+    const lastmod = post.date.split("T")[0];
+    xml += `  <url>\n    <loc>${baseUrl}/blog/${post.slug}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
   }
 
   xml += `</urlset>`;
   fs.writeFileSync(path.join(DIST, "sitemap.xml"), xml);
   console.log("  sitemap.xml");
 
-  console.log("6. Generating robots.txt...");
+  console.log("9. Generating robots.txt...");
   fs.writeFileSync(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`);
   console.log("  robots.txt");
 
-  console.log("7. Creating 404 page...");
+  console.log("10. Creating 404 page...");
   const notFoundHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>

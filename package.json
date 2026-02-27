@@ -1,0 +1,21 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serve.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "npx tsx build.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "marked": "^17.0.3",
+    "tsx": "^4.21.0"
+  }
+}
