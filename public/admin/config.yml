@@ -2,8 +2,10 @@ backend:
   name: github
   repo: MuhammadAhmed-0/company-website
   branch: main
-  auth_type: pkce
-  app_id: Ov23liROna9lmHiBO8qh
+  base_url: https://mycompanyweb.pages.dev
+  auth_endpoint: /api/auth
+
+site_url: https://mycompanyweb.pages.dev
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
