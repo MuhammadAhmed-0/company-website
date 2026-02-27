@@ -1,0 +1,25 @@
+{
+  "title": "How We Grew a SaaS Company's Organic Pipeline by 340% in 9 Months",
+  "slug": "saas-organic-pipeline-growth",
+  "meta_description": "A deep dive into the exact strategy, keyword research framework, and content approach that tripled organic demo requests for a B2B SaaS client.",
+  "og_title": "How We Grew a SaaS Company's Organic Pipeline by 340%",
+  "og_description": "A deep dive into the exact SEO strategy that tripled organic demo requests for a B2B SaaS client in 9 months.",
+  "canonical_url": "/blog/saas-organic-pipeline-growth",
+  "category": "Strategy",
+  "author_name": "Daniel Mercer",
+  "author_role": "Head of Growth Strategy",
+  "author_bio": "Daniel has led growth marketing for SaaS companies ranging from Series A startups to publicly traded enterprises. He specializes in building organic acquisition channels that scale predictably.",
+  "date": "2026-02-12T00:00:00.000Z",
+  "read_time": "15 min read",
+  "featured_image": "",
+  "excerpt": "A deep dive into the exact strategy, keyword research framework, and content approach that tripled organic demo requests for a B2B SaaS client.",
+  "body": "When CloudStack (name changed for confidentiality) approached us in May 2025, they had a common SaaS problem: over-reliance on paid acquisition. Their CAC was climbing, their organic traffic was flat, and they had zero content strategy beyond an occasional product update blog post.\n\nNine months later, their organic pipeline had grown by 340%. Here's exactly how we did it.\n\n## The Starting Point\n\nCloudStack is a B2B project management platform competing in a crowded market against established players. Their initial organic profile looked like this:\n\n- **Monthly organic traffic:** 8,200 sessions\n- **Organic demo requests:** 12 per month\n- **Domain Rating:** 34\n- **Indexed pages:** 47\n- **Content strategy:** None\n\nTheir website had a homepage, a few product pages, and a blog with 15 posts -- mostly product announcements that nobody was searching for.\n\n## Our Strategic Framework\n\n### Phase 1: Bottom-of-Funnel First (Month 1-2)\n\nMost SEO agencies start with top-of-funnel content because it's easier to rank for. We do the opposite. We targeted the highest-intent keywords first:\n\n- **Competitor comparison pages:** \"CloudStack vs [Competitor]\" for their top 8 competitors\n- **Alternative pages:** \"Best [Competitor] alternatives\" for the top 5 competitors\n- **Category pages:** \"Best project management software for [use case]\"\n\nThese pages targeted people actively evaluating solutions. The traffic volumes were lower, but the conversion rates were extraordinary -- averaging 8.4% demo request rate.\n\n### Phase 2: Mid-Funnel Content (Month 3-5)\n\nWith bottom-of-funnel foundations in place, we expanded to mid-funnel content:\n\n- **Use case landing pages:** 12 pages targeting specific workflows and team types\n- **Integration pages:** Content for every major integration, targeting \"[tool] + project management\" queries\n- **Feature deep-dives:** Detailed guides on key features, targeting users researching specific capabilities\n\n### Phase 3: Top-of-Funnel Authority (Month 5-9)\n\nFinally, we built topical authority with educational content:\n\n- **Pillar pages:** Comprehensive guides on project management methodology\n- **Data-driven content:** Original research on remote work productivity\n- **Template library:** Downloadable project templates that attracted backlinks naturally\n\n## The Technical Foundation\n\nContent alone wasn't enough. We implemented critical technical improvements:\n\n- Restructured the site architecture with proper internal linking\n- Implemented programmatic SEO for 200+ industry-specific landing pages\n- Fixed Core Web Vitals issues that were hurting page experience scores\n- Added comprehensive schema markup across all page types\n\n## Results After 9 Months\n\nThe results exceeded our projections:\n\n- **Monthly organic traffic:** 8,200 → 41,700 (408% increase)\n- **Organic demo requests:** 12 → 53 per month (340% increase)\n- **Domain Rating:** 34 → 52\n- **Indexed pages:** 47 → 312\n- **Organic contribution to pipeline:** 8% → 34%\n\n## Key Takeaways\n\n- **Start with revenue-driving keywords.** Don't chase traffic volume. Target the keywords where ranking directly generates business outcomes.\n- **Build a content moat.** Competitor comparison and alternative pages are incredibly high-converting and often under-competed.\n- **Invest in technical SEO early.** Great content on a technically broken site is wasted effort.\n- **Be patient but measure constantly.** SEO compounds over time, but you should see leading indicators of progress within 60-90 days.",
+  "toc": [
+    {"label": "The Starting Point", "id": "the-starting-point"},
+    {"label": "Our Strategic Framework", "id": "our-strategic-framework"},
+    {"label": "The Technical Foundation", "id": "the-technical-foundation"},
+    {"label": "Results After 9 Months", "id": "results-after-9-months"},
+    {"label": "Key Takeaways", "id": "key-takeaways"}
+  ],
+  "schema_type": "Article"
+}

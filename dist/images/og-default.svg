@@ -1,0 +1,7 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0b1426"/>
+  <circle cx="600" cy="280" r="80" stroke="#0055ff" stroke-width="4"/>
+  <path d="M560 320l20-60 20 35 28-70" stroke="#00d4aa" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="420" text-anchor="middle" fill="white" font-family="sans-serif" font-size="48" font-weight="800">RankFlow</text>
+  <text x="600" y="470" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="sans-serif" font-size="20">Data-Driven SEO Agency</text>
+</svg>

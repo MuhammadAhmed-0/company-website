@@ -1,0 +1,49 @@
+backend:
+  name: test-repo
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "blog"
+    label: "Blog Posts"
+    folder: "content/blog"
+    create: true
+    slug: "{{slug}}"
+    format: "json"
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true, hint: "The main headline (H1) of the blog post" }
+      - { label: "URL Slug", name: "slug", widget: "string", required: true, hint: "URL-friendly version of the title (e.g., answer-engine-optimization-guide)" }
+      - { label: "Meta Description", name: "meta_description", widget: "text", required: true, hint: "SEO meta description (150-160 characters recommended)" }
+      - { label: "OG Title", name: "og_title", widget: "string", required: false, hint: "Open Graph title for social sharing (defaults to Title if empty)" }
+      - { label: "OG Description", name: "og_description", widget: "text", required: false, hint: "Open Graph description for social sharing" }
+      - { label: "Canonical URL", name: "canonical_url", widget: "string", required: false, hint: "Canonical URL if different from default" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - "AEO"
+          - "Strategy"
+          - "AI Automation"
+          - "GEO"
+          - "Local SEO"
+          - "Technical SEO"
+          - "E-commerce SEO"
+        required: true
+      - { label: "Author Name", name: "author_name", widget: "string", required: true }
+      - { label: "Author Role", name: "author_role", widget: "string", required: false, hint: "e.g., Head of SEO Strategy" }
+      - { label: "Author Bio", name: "author_bio", widget: "text", required: false, hint: "Short author biography for E-E-A-T signals" }
+      - { label: "Publish Date", name: "date", widget: "datetime", required: true }
+      - { label: "Read Time", name: "read_time", widget: "string", required: false, hint: "e.g., 12 min read" }
+      - { label: "Featured Image", name: "featured_image", widget: "image", required: false }
+      - { label: "Excerpt", name: "excerpt", widget: "text", required: true, hint: "Short description shown on blog listing cards" }
+      - { label: "Body", name: "body", widget: "markdown", required: true }
+      - label: "Table of Contents"
+        name: "toc"
+        widget: "list"
+        required: false
+        hint: "Add section headings for the table of contents"
+        fields:
+          - { label: "Label", name: "label", widget: "string" }
+          - { label: "Section ID", name: "id", widget: "string", hint: "Must match the heading ID in the body (e.g., what-is-aeo)" }
+      - { label: "Schema Type", name: "schema_type", widget: "hidden", default: "Article" }
