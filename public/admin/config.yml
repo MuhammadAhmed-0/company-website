@@ -1,5 +1,5 @@
 backend:
-  name: test-repo
+  name: MuhammadAhmed-0/company-website
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
